@@ -1,42 +1,54 @@
-
-
 # 🧬 Survival Analysis & Risk Prediction using Gene Expression (TCGA-BRCA)
+
+## 🌐 Live Demo
+
+👉 **Try the app here:**
+https://survival-analysis-9gze2w98kxusgx6eclcj7x.streamlit.app/
+
+---
 
 ## 📌 Project Overview
 
-This project focuses on predicting **high-risk vs low-risk breast cancer patients** using gene expression data from the TCGA-BRCA dataset.
+This project predicts **high-risk vs low-risk breast cancer patients** using gene expression data from **TCGA-BRCA (Breast Cancer subset of TCGA)**.
 
-The workflow combines:
+The Cancer Genome Atlas is a large-scale cancer genomics database containing multiple cancer types.
+In this project, we specifically use **TCGA-BRCA** to ensure consistent disease biology and meaningful modeling.
+
+The pipeline integrates:
 
 * Survival Analysis (Kaplan–Meier, Cox Model)
 * Feature Selection (LASSO)
 * Machine Learning (XGBoost, Random Forest, Neural Network)
+* Deployment using **Streamlit**
 
 ---
 
 ## 🎯 Objectives
 
-* Analyze patient survival using clinical and genomic data
-* Identify important genes associated with survival
-* Build ML models to classify patients into **high-risk** and **low-risk** groups
-* Compare model performance using ROC-AUC
+* Analyze survival patterns in breast cancer patients
+* Identify key genes associated with survival
+* Build ML models to classify **high-risk vs low-risk patients**
+* Deploy a clinical-style application for real-time prediction
 
 ---
 
 ## 📂 Dataset
 
-Data source: **TCGA-BRCA (The Cancer Genome Atlas)**
+**Source:** TCGA-BRCA
 
-### Data Types Used:
+### Data Used:
 
-* Clinical data (survival information)
+* Clinical data (survival time, event)
 * Gene expression data (RNA-seq)
 
 ### Final Dataset:
 
-* **41 patients**
-* **20 selected genes (features)**
-* Target: `risk_label` (0 = low risk, 1 = high risk)
+* 41 patients
+* 20 selected genes
+* Target: `risk_label`
+
+  * 1 → High risk
+  * 0 → Low risk
 
 ---
 
@@ -55,118 +67,89 @@ Data source: **TCGA-BRCA (The Cancer Genome Atlas)**
 
 ### 2️⃣ Survival Analysis
 
-#### 🔹 Kaplan–Meier Estimation
-
-* Estimated survival probability over time
-
-#### 🔹 Cox Proportional Hazards Model
-
-* Modeled relationship between gene expression and survival risk
-* Used **L1 regularization (LASSO)** for feature selection
+* Kaplan–Meier estimation
+* Cox Proportional Hazards model
+* L1 regularization (LASSO) for feature selection
 
 ---
 
 ### 3️⃣ Feature Selection
 
-Pipeline:
-
+```text
+~60,000 genes → Top 500 → LASSO → Top 20 genes
 ```
-~60,000 genes → Top 500 (variance) → LASSO → Top 20 genes
-```
-
-Selected genes include:
-
-* CD44
-* GSTP1
-* IFITM3
-* DDR1
-* S100A7
-* SPP1
-  (*and others*)
 
 ---
 
 ### 4️⃣ Risk Label Creation
 
-Converted survival into classification:
-
 ```python
 risk_label = (time < median(time)).astype(int)
 ```
-
-* **1 → High risk (short survival)**
-* **0 → Low risk (long survival)**
 
 ---
 
 ### 5️⃣ Machine Learning Models
 
-#### 🔹 XGBoost
+* XGBoost (**ROC-AUC: 0.79**)
+* Neural Network (**0.76**)
+* Random Forest (**0.71**)
 
-* Gradient boosting model
-* Handles nonlinear relationships
-* Best performance
+### Evaluation:
 
-#### 🔹 Random Forest
-
-* Ensemble of decision trees
-* Baseline comparison model
-
-#### 🔹 Neural Network
-
-* Captures complex feature interactions
+* Cross-validation (cv=5)
+* ROC-AUC metric
 
 ---
 
-### 6️⃣ Model Evaluation
+## 🚀 Deployment (Streamlit App)
 
-Used:
+A **Streamlit web application** was developed to simulate a clinical decision-support tool.
 
-* **ROC-AUC score**
-* **Cross-validation (cv=5)** for reliability
+### Features:
+
+* Upload patient gene expression data (CSV)
+* Predict survival risk (High / Low)
+* Display prediction probability
+* Provide model-based insights
+
+👉 **Live App:**
+https://survival-analysis-9gze2w98kxusgx6eclcj7x.streamlit.app/
 
 ---
 
 ## 📊 Results
 
-| Model          | ROC-AUC    |
-| -------------- | ---------- |
-| XGBoost        | **0.79** ✅ |
-| Neural Network | 0.76       |
-| Random Forest  | 0.71       |
-
----
-
-### 📈 ROC Curve
-
-* XGBoost achieved the best separation between high-risk and low-risk patients
-* Demonstrates strong predictive capability
+| Model          | ROC-AUC  |
+| -------------- | -------- |
+| XGBoost        | **0.79** |
+| Neural Network | 0.76     |
+| Random Forest  | 0.71     |
 
 ---
 
 ## 🧠 Key Insights
 
-* Gene expression data can effectively predict patient risk
-* XGBoost outperformed other models
-* Feature selection was critical due to small dataset size
-* Survival analysis provided biologically meaningful insights
+* Gene expression data can predict patient survival risk
+* Multiple genes contribute to cancer progression (not just BRCA1/2)
+* XGBoost achieved the best performance
+* Combining survival analysis with ML improves interpretability
 
 ---
 
 ## ⚠️ Limitations
 
 * Small sample size (41 patients)
-* Limited statistical significance in some genes
-* Risk label simplifies survival (ignores censoring)
+* Risk label simplifies survival (does not fully account for censoring)
 
 ---
 
 ## 🚀 Future Work
 
 * Use larger datasets
-* Apply DeepSurv (deep learning for survival analysis)
-* Incorporate multi-omics data
-* External validation on independent datasets
+* Apply deep learning survival models (e.g., DeepSurv)
+* Integrate multi-omics data
+* External validation on independent cohorts
 
 ---
 
@@ -176,15 +159,15 @@ Used:
 * Pandas, NumPy
 * Scikit-learn
 * XGBoost
-* Lifelines (survival analysis)
-* Matplotlib
+* Lifelines
+* Streamlit
 
 ---
 
 ## 📌 Conclusion
 
-This project demonstrates a complete pipeline from raw genomic data to predictive modeling.
-It highlights how **machine learning + survival analysis** can be combined to identify high-risk cancer patients and important biological markers.
+This project demonstrates an end-to-end pipeline from genomic data to deployment.
+It highlights how **machine learning and survival analysis can support clinical decision-making** in breast cancer.
 
 ---
 
@@ -195,6 +178,4 @@ Master’s Student – Life Science Informatics
 
 ---
 
-## ⭐ If you like this project
-
-Give it a ⭐ on GitHub!
+⭐ If you like this project, consider giving it a star!
